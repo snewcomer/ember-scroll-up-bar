@@ -1,24 +1,23 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { module, test } from 'qunit';
+import { setupRenderingTest } from 'ember-qunit';
+import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('ember-scroll-up-bar', 'Integration | Component | ember scroll up bar', {
-  integration: true
-});
+module('Integration | Component | ember scroll up bar', function(hooks) {
+  setupRenderingTest(hooks);
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+  test('it renders with no class', async function(assert) {
+    await render(hbs`
+      {{#ember-scroll-up-bar}}
+        <ul>
+          <li>WAT</li>
+        </ul>
+      {{/ember-scroll-up-bar}}
+      <div style="height:500px" class="container">
+        Scroll Down
+      </div>
+    `);
 
-  this.render(hbs`{{ember-scroll-up-bar}}`);
-
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#ember-scroll-up-bar}}
-      template block text
-    {{/ember-scroll-up-bar}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+    assert.equal(this.element.className, 'ember-view');
+  });
 });
