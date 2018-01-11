@@ -1,5 +1,18 @@
 # ember-scroll-up-bar
 
+- will position your element fixed with top: 0 if in view.
+- adds `ember-scroll-up-bar` class if in view
+- resets to original styles when scrolled back to top
+- No jQuery!  Will make build w/ no jQuery in the future
+
+## Usage
+
+```
+{{#ember-scroll-up-bar}}
+  {{site-header}}
+{{/ember-scroll-up-bar}}
+```
+
 This README outlines the details of collaborating on this Ember addon.
 
 ## Installation

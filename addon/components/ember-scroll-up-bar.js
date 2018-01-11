@@ -1,6 +1,6 @@
 import Component from '@ember/component';
 import { get, set } from '@ember/object';
-import { bind } from '@ember/runloop';
+import { bind, later } from '@ember/runloop';
 
 export default Component.extend({
   classNameBindings: ['_showMe:ember-scroll-up-bar'],
@@ -12,10 +12,14 @@ export default Component.extend({
    */
   topPos: 0,
 
+  _initialRender: false,
   _showMe: false,
   _originalPosTop: 0,
 
   didInsertElement() {
+    // get nav showing on initial load
+    set(this, '_initialRender', true);
+
     this.top = window.pageYOffset || document.documentElement.scrollTop;
     this._originalPosTop = this.element.getBoundingClientRect().top;
     this.element.style.top = get(this, 'topPos') || this._originalPosTop;
@@ -25,6 +29,8 @@ export default Component.extend({
 
     document.addEventListener('scroll', this._scrollClosure.bind(this), false);   
     document.addEventListener('touchmove', this._scrollClosure.bind(this), false);   
+
+    later(this, () => set(this, '_initialRender', false), 50);
   },
 
   /**
@@ -46,14 +52,14 @@ export default Component.extend({
     }
 
     // scrolled down
-    if (newTop > this.top) {
+    if (newTop > this.top && !(newTop < this._originalBottom)) {
       set(this, '_scheduledAnimationFrame', true);
       // requestAnimationFrame to run visual changes in order to not block scrolling/touch events
       window.requestAnimationFrame(bind(this, this._scrolledDown, newTop));
     }
 
     // scrolled up
-    if (newTop < this.top) {
+    if (newTop < this.top || this._initialRender) {
       // ensure not in container of header
       if (this._originalBottom < newTop) {
         set(this, '_scheduledAnimationFrame', true);
@@ -94,6 +100,7 @@ export default Component.extend({
     this.element.style.right = '0px';
     this.element.style.left = '0px';
     set(this, '_scheduledAnimationFrame', false);
+    // still want _showMe: true b/c get animation like out effect
   },
 
   willDestroyElement() {
