@@ -1,0 +1,76 @@
+@import 'ember-scroll-up-bar';
+
+.container {
+  padding-top: 65px;
+}
+// .container-wrapper {
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   align-items: center;
+
+// }
+.first-section {
+  height: 100vh;
+}
+h3 {
+  text-align: center;
+}
+.another-section {
+  font-size: 1.2rem;
+  text-align: center;
+  height: 500px;
+}
+
+.site-header {
+  position: relative;
+  display: block;
+  padding: 0 10px;
+  height: 65px;
+  background-color: rgba(0, 0, 0, .8);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 4em;
+
+}
+
+.header-navigation__options {
+  display: flex;
+  justify-content: flex-end;
+  white-space: nowrap;
+  align-items: center;
+
+}
+
+li {
+  font-size: 12px;
+  color: white;
+  display: block;
+  font-weight: 600;
+  padding: 11px 10px;
+}
+
+.header-navigation--left, .header-navigation--right {
+  display: flex;
+  margin-left: 2em;
+}
+.header__logo {
+  display: flex;
+  align-items: center;
+  line-height: 35px;
+  margin: 0;
+  min-height: 65px;
+}
+
+li {
+  list-style-type: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}

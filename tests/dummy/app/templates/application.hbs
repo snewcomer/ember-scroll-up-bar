@@ -1,3 +1,31 @@
-<h2 id="title">Welcome to Ember</h2>
+{{#ember-scroll-up-bar}}
+  <div class="site-header">
+    <div class="nav-container header-navigation">
+      <nav class="header-navigation--left" role="navigation">
+        <h3 class="header__logo t-header-logo">
+        </h3>
+      </nav>
 
-{{outlet}}
+      <nav role="navigation" class="header-navigation--right">
+        <ul role="list" class="header-navigation__options">
+          <li role="listitem">login</li>
+          <li role="listitem">signup</li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+{{/ember-scroll-up-bar}}
+
+<div class="container">
+
+  <div class="first-section">
+    <h3>
+      Now scroll down!
+    </h3>
+  </div>
+
+  <div class="another-section">
+    <h3> Now go back up! </h3>
+  </div>
+
+</div>
