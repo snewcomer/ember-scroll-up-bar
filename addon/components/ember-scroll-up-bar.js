@@ -3,7 +3,7 @@ import { get, set } from '@ember/object';
 import { bind } from '@ember/runloop';
 
 export default Component.extend({
-  classNames: ['ember-scroll-up-bar'],
+  classNameBindings: ['_showMe:ember-scroll-up-bar'],
 
   _scheduledAnimationFrame: false,
   /**
@@ -12,6 +12,7 @@ export default Component.extend({
    */
   topPos: 0,
 
+  _showMe: false,
   _originalPosTop: 0,
 
   didInsertElement() {
@@ -65,16 +66,22 @@ export default Component.extend({
   },
 
   _resetBar() {
-    this.element.style.position = 'absolute';
-    this.element.style.top = this._originalPosTop;
+    this.element.style.position = '';
+    this.element.style.top = '';
+    this.element.style.right = '';
+    this.element.style.left = '';
     set(this, '_scheduledAnimationFrame', false);
+    set(this, '_showMe', false);
   },
 
   _scrolledUp(newTop) {
     this.element.style.position = 'fixed';
     this.element.style.top = '0px';
+    this.element.style.right = '0px';
+    this.element.style.left = '0px';
     this.cachedTop = `${newTop}px`;
     set(this, '_scheduledAnimationFrame', false);
+    set(this, '_showMe', true);
   },
 
   _scrolledDown(newTop) {
@@ -84,6 +91,8 @@ export default Component.extend({
     } else if (this._originalBottom * 2 < newTop) {
       this.element.style.top = this.cachedTop;
     }
+    this.element.style.right = '0px';
+    this.element.style.left = '0px';
     set(this, '_scheduledAnimationFrame', false);
   },
 
