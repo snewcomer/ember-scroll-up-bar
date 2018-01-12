@@ -7,13 +7,35 @@ import { assert } from '@ember/debug';
 export default Component.extend({
   layout,
 
+  /**
+   * avoids multiple requestAnimationFrames from firing, potentially causing thrashing
+   * 
+   * @property _scheduleAnimationFrame
+   */
   _scheduledAnimationFrame: false,
   /**
+   * @property _initialRender
+   */
+  _initialRender: false,
+  /**
+   * hides or shows the maybe-in-element helper 
+   * 
+   * @property _showMe
+   */
+  _showMe: false,
+
+  /**
    * user specified from top of document
+   * 
    * @property componentHeight
+   * @required
    */
   componentHeight: null,
-
+  /**
+   * see index.js
+   * 
+   * @property destination
+   */
   destination: 'ember-scroll-up-bar-wormhole',
 
   to: computed('destination', {
@@ -24,15 +46,25 @@ export default Component.extend({
       return v === undefined ? this.get('destination') : v;
     }
   }),
+
+  /**
+   * render at root w/ id of #ember-scroll-up-bar-wormhole
+   * passed to maybe-in-element helper
+   * 
+   * @property destinationElement
+   */
   destinationElement: computed('to', function () {
     return document.getElementById(get(this, 'to'));
   }),
 
-  _initialRender: false,
-  _showMe: false,
+  /**
+   * @property slideOutUp
+   */
   slideOutUp: false,
+  /**
+   * @property slideInDown
+   */
   slideInDown: false,
-  // _originalPosTop: 0,
 
   didInsertElement() {
     assert('You must pas componentHeight to ember-scroll-up-bar', get(this, 'componentHeight'));
@@ -50,14 +82,15 @@ export default Component.extend({
   },
 
   /**
-   * on scroll listeners
-   * pageYOffset is an alias for scrollY and best for cross-browser support
+   * process reset, scroll up, and scroll down events 
+   * 
    * @method _scrollClosure
    */
   _scrollClosure() {
     if (this._scheduledAnimationFrame) return;
 
     // read before requestAnimationFrame to avoid layout thrashing
+    // pageYOffset is an alias for scrollY and best for cross-browser support
     let newTop = window.pageYOffset || document.documentElement.scrollTop;
 
     // reset
