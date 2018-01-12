@@ -1,31 +1,47 @@
 import Component from '@ember/component';
-import { get, set } from '@ember/object';
-import { bind, later } from '@ember/runloop';
+import layout from '../templates/components/ember-scroll-up-bar';
+import { get, set, computed } from '@ember/object';
+import { bind, later, debounce } from '@ember/runloop';
+import { assert } from '@ember/debug';
 
 export default Component.extend({
-  classNameBindings: ['_showMe:ember-scroll-up-bar'],
+  layout,
 
   _scheduledAnimationFrame: false,
   /**
    * user specified from top of document
-   * @property topPos
+   * @property componentHeight
    */
-  topPos: 0,
+  componentHeight: null,
+
+  destination: 'ember-scroll-up-bar-wormhole',
+
+  to: computed('destination', {
+    get() {
+      return this.get('destination');
+    },
+    set(_, v) {
+      return v === undefined ? this.get('destination') : v;
+    }
+  }),
+  destinationElement: computed('to', function () {
+    return document.getElementById(get(this, 'to'));
+  }),
 
   _initialRender: false,
   _showMe: false,
-  _originalPosTop: 0,
+  slideOutUp: false,
+  slideInDown: false,
+  // _originalPosTop: 0,
 
   didInsertElement() {
+    assert('You must pas componentHeight to ember-scroll-up-bar', get(this, 'componentHeight'));
+
     // get nav showing on initial load
     set(this, '_initialRender', true);
 
     this.top = window.pageYOffset || document.documentElement.scrollTop;
-    this._originalPosTop = this.element.getBoundingClientRect().top;
-    this.element.style.top = get(this, 'topPos') || this._originalPosTop;
-    // if start out in middle of page
-    this.cachedTop = `${this.top}px`;
-    this._originalBottom = this.element.offsetHeight + this.element.offsetTop;
+    this._originalBottom = get(this, 'componentHeight');// this.element.offsetHeight + this.element.offsetTop;
 
     document.addEventListener('scroll', this._scrollClosure.bind(this), false);   
     document.addEventListener('touchmove', this._scrollClosure.bind(this), false);   
@@ -45,17 +61,17 @@ export default Component.extend({
     let newTop = window.pageYOffset || document.documentElement.scrollTop;
 
     // reset
-    if (newTop === 0) {
+    if (newTop < this._originalBottom) {
       set(this, '_scheduledAnimationFrame', true);
       // requestAnimationFrame to run visual changes in order to not block scrolling/touch events
-      window.requestAnimationFrame(bind(this, this._resetBar, newTop));
+      window.requestAnimationFrame(bind(this, this._resetBar));
     }
 
     // scrolled down
-    if (newTop > this.top && !(newTop < this._originalBottom)) {
+    if (newTop > this.top) {
       set(this, '_scheduledAnimationFrame', true);
       // requestAnimationFrame to run visual changes in order to not block scrolling/touch events
-      window.requestAnimationFrame(bind(this, this._scrolledDown, newTop));
+      window.requestAnimationFrame(bind(this, this._scrolledDown));
     }
 
     // scrolled up
@@ -64,7 +80,7 @@ export default Component.extend({
       if (this._originalBottom < newTop) {
         set(this, '_scheduledAnimationFrame', true);
         // requestAnimationFrame to run visual changes in order to not block scrolling/touch events
-        window.requestAnimationFrame(bind(this, this._scrolledUp, newTop));
+        window.requestAnimationFrame(bind(this, this._scrolledUp));
       }
     }
 
@@ -72,39 +88,30 @@ export default Component.extend({
   },
 
   _resetBar() {
-    this.element.style.position = '';
-    this.element.style.top = '';
-    this.element.style.right = '';
-    this.element.style.left = '';
     set(this, '_scheduledAnimationFrame', false);
     set(this, '_showMe', false);
+    set(this, 'slideOutUp', true);
+    set(this, 'slideInDown', false);
   },
 
-  _scrolledUp(newTop) {
-    this.element.style.position = 'fixed';
-    this.element.style.top = '0px';
-    this.element.style.right = '0px';
-    this.element.style.left = '0px';
-    this.cachedTop = `${newTop}px`;
+  _scrolledUp() {
     set(this, '_scheduledAnimationFrame', false);
     set(this, '_showMe', true);
+    set(this, 'slideOutUp', false);
+    set(this, 'slideInDown', true);
   },
 
-  _scrolledDown(newTop) {
-    this.element.style.position = 'absolute';
-    if (this._originalBottom > newTop) {
-      this.element.style.top = 0;
-    } else if (this._originalBottom * 2 < newTop) {
-      this.element.style.top = this.cachedTop;
-    }
-    this.element.style.right = '0px';
-    this.element.style.left = '0px';
+  _scrolledDown() {
+    set(this, 'slideOutUp', true);
+    set(this, 'slideInDown', false);
     set(this, '_scheduledAnimationFrame', false);
-    // still want _showMe: true b/c get animation like out effect
+    // delay to allow for scrollOutUp
+    debounce(this, () => set(this, '_showMe', false), 15);
   },
 
   willDestroyElement() {
     this._super(...arguments);
     document.removeEventListener('scroll', this._scrollClosure, false);   
+    document.removeEventListener('touchmove', this._scrollClosure, false);   
   }
 });

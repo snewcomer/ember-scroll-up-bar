@@ -1,0 +1,7 @@
+{{#if _showMe}}
+  {{#maybe-in-element destinationElement false}}
+    {{#ember-scroll-up-bar-animated slideInDown=slideInDown slideOutUp=slideOutUp}}
+      {{yield}}
+    {{/ember-scroll-up-bar-animated}}
+  {{/maybe-in-element}}
+{{/if}}
