@@ -65,6 +65,12 @@ export default Component.extend({
    * @property slideInDown
    */
   slideInDown: false,
+  
+  init() {
+    this._super();
+    
+    this._boundScrollClosure = this._scrollClosure.bind(this);
+  },
 
   didInsertElement() {
     assert('You must pas componentHeight to ember-scroll-up-bar', get(this, 'componentHeight'));
@@ -75,8 +81,8 @@ export default Component.extend({
     this.top = window.pageYOffset || document.documentElement.scrollTop;
     this._originalBottom = get(this, 'componentHeight');// this.element.offsetHeight + this.element.offsetTop;
 
-    document.addEventListener('scroll', this._scrollClosure.bind(this), false);   
-    document.addEventListener('touchmove', this._scrollClosure.bind(this), false);   
+    document.addEventListener('scroll', this._boundScrollClosure, false);   
+    document.addEventListener('touchmove', this._boundScrollClosure, false);
 
     later(this, () => set(this, '_initialRender', false), 50);
   },
@@ -144,7 +150,7 @@ export default Component.extend({
 
   willDestroyElement() {
     this._super(...arguments);
-    document.removeEventListener('scroll', this._scrollClosure, false);   
-    document.removeEventListener('touchmove', this._scrollClosure, false);   
+    document.removeEventListener('scroll', this._boundScrollClosure, false);   
+    document.removeEventListener('touchmove', this._boundScrollClosure, false);   
   }
 });
