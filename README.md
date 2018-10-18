@@ -48,7 +48,7 @@ Contributing
 
 ### Installation
 
-* `git clone <repository-url>`
+* `git clone git@github.com:snewcomer/ember-scroll-up-bar.git
 * `cd ember-scroll-up-bar`
 * `yarn install`
 
