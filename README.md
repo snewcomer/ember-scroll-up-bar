@@ -6,7 +6,7 @@ This addon simply wraps your navigation/header component and will render it at t
 - adds `<ember-scroll-up-bar>` element if in view with animation when sliding in and out
 - No jQuery!  Event listeners are on the `document`.  Will make build w/ no jQuery in the future
 - requestAnimationFrame for performant layout re-renders
-- Does not assume structure of you app, thus need to duplicate your header code as shown below.  
+- Does not assume structure of you app, thus need to duplicate your header code as shown below.
 - currently supports scss (if you are using something else, it is easy to copy to your desired format)
 
 ## Usage
@@ -29,25 +29,49 @@ And import the scss file into your app.scss
 @import 'ember-scroll-up-bar'
 ```
 
-## Installation
+Installation
+------------------------------------------------------------------------------
 
-* `git clone <repository-url>` this repository
+```
+ember install ember-scroll-up-bar
+```
+
+
+Usage
+------------------------------------------------------------------------------
+
+[Longer description of how to use the addon in apps.]
+
+
+Contributing
+------------------------------------------------------------------------------
+
+### Installation
+
+* `git clone <repository-url>`
 * `cd ember-scroll-up-bar`
-* `npm install`
+* `yarn install`
 
-## Running
+### Linting
+
+* `yarn lint:hbs`
+* `yarn lint:js`
+* `yarn lint:js --fix`
+
+### Running tests
+
+* `ember test` – Runs the test suite on the current Ember version
+* `ember test --server` – Runs the test suite in "watch mode"
+* `ember try:each` – Runs the test suite against multiple Ember versions
+
+### Running the dummy application
 
 * `ember serve`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
-
-## Running Tests
-
-* `npm test` (Runs `ember try:each` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
+* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
 
 For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+
+License
+------------------------------------------------------------------------------
+
+This project is licensed under the [MIT License](LICENSE.md).
